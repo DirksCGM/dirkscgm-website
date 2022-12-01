@@ -5,6 +5,7 @@ package handlers
 
 import (
 	"github.com/DirksCGM/dirkscgm-website/pkg/config"
+	"github.com/DirksCGM/dirkscgm-website/pkg/models"
 	"github.com/DirksCGM/dirkscgm-website/pkg/render"
 	"net/http"
 )
@@ -31,5 +32,15 @@ func NewHandlers(r *Repository) {
 // Home is the handler function for a home page with a
 // receiver to link all handlers with the repository
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home.page.gohtml")
+	render.RenderTemplate(w, "home.page.gohtml", &models.TemplateData{})
+}
+
+func (m *Repository) Projects(w http.ResponseWriter, r *http.Request) {
+	// template data logic
+	stringMap := make(map[string]string)
+	stringMap["test"] = "this is a test!"
+
+	render.RenderTemplate(w, "projects.page.gohtml", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }

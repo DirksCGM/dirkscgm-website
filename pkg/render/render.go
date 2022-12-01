@@ -3,6 +3,7 @@ package render
 import (
 	"bytes"
 	"github.com/DirksCGM/dirkscgm-website/pkg/config"
+	"github.com/DirksCGM/dirkscgm-website/pkg/models"
 	"html/template"
 	"log"
 	"net/http"
@@ -16,8 +17,15 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
+// AddDefaultData takes template data and returns it
+// to be used for site-wide access of data
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+	// add the global data here
+	return td
+}
+
 // RenderTemplate renders the template
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	var templateCache map[string]*template.Template
 
 	// rebuild the templates on every request if in dev mode
@@ -34,8 +42,11 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 		log.Fatal("could not get the template from template cache") // kills the process
 	}
 
-	buffer := new(bytes.Buffer)   // has bytes to execute values of the map from the buffer (better error checking)
-	err := t.Execute(buffer, nil) // if parsed but fails, a useful indication is given as to why
+	buffer := new(bytes.Buffer) // has bytes to execute values of the map from the buffer (better error checking)
+
+	// render templateData (td) on execute to the byte buffer
+	td = AddDefaultData(td)      // include global data for the site
+	err := t.Execute(buffer, td) // if parsed but fails, a useful indication is given as to why
 	if err != nil {
 		log.Println(err)
 	}

@@ -31,6 +31,7 @@ func main() {
 
 	// templates with their layouts are handled here, rendered via the render func
 	http.HandleFunc("/", handlers.Repo.Home)
+	http.HandleFunc("/projects", handlers.Repo.Projects)
 	fmt.Printf("Web server running on: http://localhost%s/", portNumber)
 
 	// start the webserver
